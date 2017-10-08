@@ -68,6 +68,7 @@ namespace aam {
 			coordsList.push_back(vec);
 			imgList.push_back(dirPath + img);
 		}
+		fin.close();
 		coordsMatrix.resize(coordsList.size(), coordsList[0].cols());
 		for (size_t i = 0; i < coordsList.size(); ++i) {
 			if (needScale) {

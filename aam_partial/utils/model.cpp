@@ -58,6 +58,9 @@ namespace aam {
 		std::cout << "Collect texture\n";
 		auto textureList = Texture::collectTextures(rawShapeList, videoCapture);
 
+		// release video
+		videoCapture.release();
+
 		// real build
 		build(alignedShapeList, textureList);
 
