@@ -1,0 +1,102 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\core">
+      <UniqueIdentifier>{40405909-d00d-462e-b59c-a5527d30f196}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\geo">
+      <UniqueIdentifier>{35b36d1f-28e3-45fd-bb4a-e29e3f73f76c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\geo">
+      <UniqueIdentifier>{e0b58d22-e2e6-4b74-834b-de8e671724fe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\utils">
+      <UniqueIdentifier>{8ab1b377-cb22-4d36-a7c6-f42c0b518c41}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\utils">
+      <UniqueIdentifier>{1811a09d-3629-40fa-b5c0-82cf55b05873}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\texture">
+      <UniqueIdentifier>{66808028-470a-43ba-99e4-20e5dbc88255}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\texture">
+      <UniqueIdentifier>{d318e04c-5ebf-4b8a-a42a-c15b3588eff5}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="geo\procrustes.cpp">
+      <Filter>Source Files\geo</Filter>
+    </ClCompile>
+    <ClCompile Include="geo\triangulation.cpp">
+      <Filter>Source Files\geo</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\asf.cpp">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="geo\bbox.cpp">
+      <Filter>Source Files\geo</Filter>
+    </ClCompile>
+    <ClCompile Include="texture\texutre.cpp">
+      <Filter>Source Files\texture</Filter>
+    </ClCompile>
+    <ClCompile Include="geo\mesh.cpp">
+      <Filter>Source Files\geo</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\pca.cpp">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\model.cpp">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\lms.cpp">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="core\aam.h">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="geo\procrustes.h">
+      <Filter>Header Files\geo</Filter>
+    </ClInclude>
+    <ClInclude Include="geo\triangulation.h">
+      <Filter>Header Files\geo</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\asf.h">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="geo\bbox.h">
+      <Filter>Header Files\geo</Filter>
+    </ClInclude>
+    <ClInclude Include="texture\texture.h">
+      <Filter>Header Files\texture</Filter>
+    </ClInclude>
+    <ClInclude Include="geo\mesh.h">
+      <Filter>Header Files\geo</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\pca.h">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\model.h">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\lms.h">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
