@@ -13,15 +13,15 @@ namespace aam {
 		cap.set(CV_CAP_PROP_POS_FRAMES, 0);
 		std::string line;
 		cv::Mat image;
-		std::vector<std::vector<double>> list;
+		std::vector<std::vector<float>> list;
 		while (std::getline(fin, line)) {
 			if (line.length() == 0) break;
 			cap >> image;
-			double hc = image.cols / 2.;
-			double hr = image.rows / 2.;
-			std::vector<double> row;
+			float hc = image.cols / 2.;
+			float hr = image.rows / 2.;
+			std::vector<float> row;
 			std::stringstream stream(line);
-			double x, y;
+			float x, y;
 			while (stream >> x >> y) {
 				if (needScale) {
 					x = x * hc + hc;

@@ -13,9 +13,9 @@ namespace aam {
 		}
 	}
 
-	bool Mesh::isInside(const Point &p, int &tri, double &alpha, double &beta, double &gamma) {
+	bool Mesh::isInside(const Point &p, int &tri, float &alpha, float &beta, float &gamma) {
 		int trCount = (int)triangleList.size();
-		double a, b, c;
+		float a, b, c;
 		// check last hit index
 		bool hit = triangleList[lastHitIndex].isInside(p, a, b, c);
 		// try other

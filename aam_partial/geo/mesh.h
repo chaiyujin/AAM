@@ -13,10 +13,10 @@ namespace aam {
 	public:
 		Mesh() { lastHitIndex = 0; }
 		Mesh(const RowVectorX &shape);
-		bool isInside(const Point &p, int &tri, double &alpha, double &beta, double &gamma);
+		bool isInside(const Point &p, int &tri, float &alpha, float &beta, float &gamma);
 		bool isInside(const Point &p) {
 			int tri;
-			double a, b, c;
+			float a, b, c;
 			return isInside(p, tri, a, b, c);
 		}
 		BBox getBBox() const { return bbox; }

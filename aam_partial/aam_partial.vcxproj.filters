@@ -34,6 +34,12 @@
     <Filter Include="Header Files\texture">
       <UniqueIdentifier>{d318e04c-5ebf-4b8a-a42a-c15b3588eff5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\pybind">
+      <UniqueIdentifier>{22abf1a1-0d80-4f93-8cd0-771a8e68dd6d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\pybind">
+      <UniqueIdentifier>{e83a204a-2ff3-4992-a816-95eedc035e76}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -66,6 +72,15 @@
     <ClCompile Include="utils\lms.cpp">
       <Filter>Source Files\utils</Filter>
     </ClCompile>
+    <ClCompile Include="utils\texfit.cpp">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\string.cpp">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\save.cpp">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\aam.h">
@@ -96,6 +111,18 @@
       <Filter>Header Files\utils</Filter>
     </ClInclude>
     <ClInclude Include="utils\lms.h">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\texfit.h">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\print.h">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\string.h">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\save.h">
       <Filter>Header Files\utils</Filter>
     </ClInclude>
   </ItemGroup>

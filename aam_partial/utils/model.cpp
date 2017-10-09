@@ -7,8 +7,8 @@ namespace aam {
 		centerPoint = Point(0, 0);
 		const auto &meanShape = Procrustes::getMeanShape();
 		for (int j = 0; j < meanShape.size(); j += 2) {
-			double x = meanShape[j];
-			double y = meanShape[j + 1];
+			float x = meanShape[j];
+			float y = meanShape[j + 1];
 			centerPoint.x += x;
 			centerPoint.y += y;
 		}
@@ -20,8 +20,8 @@ namespace aam {
 		for (int i = 0; i < shapeList.rows(); ++i) {
 			auto &row = shapeList.row(i);
 			for (int j = 0; j < row.cols(); j += 2) {
-				double x = row[j];
-				double y = row[j + 1];
+				float x = row[j];
+				float y = row[j + 1];
 				x = x - centerPoint.x;
 				y = y - centerPoint.y;
 				if (std::abs(x) > xScale) xScale = std::abs(x);
@@ -31,8 +31,8 @@ namespace aam {
 		for (int i = 0; i < shapeList.rows(); ++i) {
 			auto &row = shapeList.row(i);
 			for (int j = 0; j < row.cols(); j += 2) {
-				double x = row[j];
-				double y = row[j + 1];
+				float x = row[j];
+				float y = row[j + 1];
 				x = (x - centerPoint.x) / xScale;
 				y = (y - centerPoint.y) / yScale;
 				row[j] = x;
@@ -96,13 +96,13 @@ namespace aam {
 		std::cout << "PCA on shape\n";
 		p_pcaShp = new PCA(alignedShapeList, 0.99);
 		std::cout << "Shape has components: " << p_pcaShp->getNumComponents() << std::endl;
-		double shapeEnergy = p_pcaShp->getEigenValues().sum();
+		float shapeEnergy = p_pcaShp->getEigenValues().sum();
 		std::cout << "Shape energy: " << shapeEnergy << std::endl;
 		// pca on texture on mean shape
 		std::cout << "PCA on texture\n";
 		p_pcaTex = new PCA(textureList, 0.99);
 		std::cout << "Texture has components: " << p_pcaTex->getNumComponents() << std::endl;
-		double textureEnergy = p_pcaTex->getEigenValues().sum();
+		float textureEnergy = p_pcaTex->getEigenValues().sum();
 		std::cout << "Texture energy: " << textureEnergy << std::endl;
 		// pca on combined
 		// texture Scale

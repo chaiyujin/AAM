@@ -5,12 +5,13 @@
 #include <string>
 #include <iostream>
 #include <fstream>
-#define SHOW
+//#define SHOW
 
 namespace aam {
-	typedef cv::Point2d Point;
-	typedef cv::Scalar Color;
-	typedef double Scalar;
+	typedef unsigned char byte;
+	typedef float Scalar;
+	typedef cv::Point_<Scalar> Point;
+	typedef cv::Scalar_<Scalar> Color;
 	template<class Scalar, int rows = Eigen::Dynamic, int cols = Eigen::Dynamic>
 	struct MatrixTraits {
 		typedef Eigen::Matrix<Scalar, rows, cols, Eigen::RowMajor> MatrixType;
@@ -25,6 +26,8 @@ namespace aam {
 	typedef MatrixTraits<Scalar,	1, 3>::MatrixType				RowVector3;
 	typedef MatrixTraits<Scalar			>::MatrixType				MatrixX;
 	typedef MatrixTraits<Scalar,	2, 2>::MatrixType				Matrix2;
+
+	class Saver;
 
 	// view
 	template<class Scalar>

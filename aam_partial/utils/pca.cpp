@@ -2,13 +2,13 @@
 
 namespace aam {
 
-	PCA::PCA(const Eigen::MatrixXd &samplesOnRows, double percentage) {
+	PCA::PCA(const MatrixX &samplesOnRows, float percentage) {
 		// center aligned
 		mean = samplesOnRows.colwise().mean();
 		auto aligned = samplesOnRows.rowwise() - mean;
-		Eigen::JacobiSVD<Eigen::MatrixXd> svd(aligned, Eigen::ComputeThinV);
+		Eigen::JacobiSVD<MatrixX> svd(aligned, Eigen::ComputeThinV);
 		eigenValues = svd.singularValues();
-		double *sum = new double[eigenValues.size()];
+		float *sum = new float[eigenValues.size()];
 		sum[0] = eigenValues[0];
 		for (int i = 1; i < eigenValues.size(); ++i) {
 			sum[i] = sum[i - 1] + eigenValues[i];

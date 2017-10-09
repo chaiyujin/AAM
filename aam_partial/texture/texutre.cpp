@@ -5,6 +5,8 @@
 #include <vector>
 
 namespace aam {
+	int Texture::g_h;
+	int Texture::g_w;
 	MatrixX Texture::g_texCoords;
 	Mesh Texture::g_meanMesh;
 	MatrixX Texture::texCoordsInMeanMesh(Mesh &meanMesh) {
@@ -14,8 +16,8 @@ namespace aam {
 		for (int y = (int)bbox.startY(); y <= (int)bbox.endY(); ++y) {
 			for (int x = (int)bbox.startX(); x <= (int)bbox.endX(); ++x) {
 				int tri;
-				double a, b, c;
-				bool hit = meanMesh.isInside(Point(x, y), tri, a, b, c);
+				float a, b, c;
+				bool hit = meanMesh.isInside(Point((Scalar)x, (Scalar)y), tri, a, b, c);
 				// hit!
 				if (hit) {
 					std::vector<Scalar> coords;
@@ -29,7 +31,7 @@ namespace aam {
 		}
 		g_texCoords.resize(coordsList.size(), coordsList[0].size());
 		for (int i = 0; i < g_texCoords.rows(); ++i) {
-			g_texCoords.row(i) = Eigen::Vector4d(coordsList[i][0], coordsList[i][1], coordsList[i][2], coordsList[i][3]);
+			g_texCoords.row(i) = Eigen::Matrix<Scalar, 4, 1>(coordsList[i][0], coordsList[i][1], coordsList[i][2], coordsList[i][3]);
 		}
 		return g_texCoords;
 	}
@@ -67,7 +69,7 @@ namespace aam {
 	}
 
 	void Texture::renderTexOnMesh(const RowVectorX &texture, Mesh &mesh, cv::Mat &image) {
-		cv::Mat mean = cv::Mat::zeros(image.rows, image.cols, image.type());
+		cv::Mat mean = cv::Mat::zeros(g_h, g_w, image.type());
 		const auto &trIndexes = Triangulation::getTriangleIndexes();
 		const auto &shape = Procrustes::getMeanShape();
 		// on mean mesh
@@ -97,7 +99,7 @@ namespace aam {
 		for (int y = (int)bbox.startY(); y <= (int)bbox.endY(); ++y) {
 			for (int x = (int)bbox.startX(); x <= (int)bbox.endX(); ++x) {
 				int tri;
-				double vec[3];
+				float vec[3];
 				bool hit = mesh.isInside(Point(x, y), tri, vec[0], vec[1], vec[2]);
 				// hit!
 				if (hit) {
@@ -112,7 +114,7 @@ namespace aam {
 					Color color = bilinear(Point(rawX, rawY), mean);
 					unsigned char *ptr = image.ptr<unsigned char>(y);
 					for (int i = 0; i < 3; ++i) {
-						ptr[x * 3 + i] = color[i];
+						ptr[x * 3 + i] = (unsigned char)color[i];
 					}
 				}
 			}
@@ -123,8 +125,8 @@ namespace aam {
 		int x = (int)p.x;
 		int y = (int)p.y;
 
-		double rx = p.x - x;
-		double ry = p.y - y;
+		float rx = p.x - x;
+		float ry = p.y - y;
 		Color c00 = colorAt(image, x, y);
 		Color c01 = colorAt(image, x, y + 1);
 		Color c10 = colorAt(image, x + 1, y);
@@ -140,6 +142,8 @@ namespace aam {
 		for (int imgI = 0; imgI < imgList.size(); ++imgI) {
 			auto &vec = rawShapeList.row(imgI);
 			cv::Mat mat = cv::imread(imgList[imgI]);
+			g_w = mat.cols;
+			g_h = mat.rows;
 			auto texture = aam::Texture::warpTexToMeanMesh(vec, mat);
 			if (ret.rows() == 0) {
 				ret.resize(imgList.size(), texture.cols());
@@ -161,6 +165,8 @@ namespace aam {
 		for (int imgI = 0; imgI < rawShapeList.rows(); ++imgI) {
 			auto &vec = rawShapeList.row(imgI);
 			cap >> image;
+			g_w = image.cols;
+			g_h = image.rows;
 			auto texture = aam::Texture::warpTexToMeanMesh(vec, image);
 			if (ret.rows() == 0) {
 				ret.resize(rawShapeList.rows(), texture.cols());

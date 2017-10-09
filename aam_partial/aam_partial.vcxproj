@@ -158,6 +158,9 @@
     <ClCompile Include="utils\lms.cpp" />
     <ClCompile Include="utils\model.cpp" />
     <ClCompile Include="utils\pca.cpp" />
+    <ClCompile Include="utils\save.cpp" />
+    <ClCompile Include="utils\string.cpp" />
+    <ClCompile Include="utils\texfit.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\aam.h" />
@@ -170,6 +173,10 @@
     <ClInclude Include="utils\lms.h" />
     <ClInclude Include="utils\model.h" />
     <ClInclude Include="utils\pca.h" />
+    <ClInclude Include="utils\print.h" />
+    <ClInclude Include="utils\save.h" />
+    <ClInclude Include="utils\string.h" />
+    <ClInclude Include="utils\texfit.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

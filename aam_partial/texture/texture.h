@@ -7,9 +7,11 @@
 namespace aam {
 	class Texture {
 	private:
+		static int g_w, g_h;
 		static Mesh g_meanMesh;
 		static MatrixX g_texCoords;
 	public:
+		friend class Saver;
 		static cv::Point2i round(const Point &p) {
 			return cv::Point2i((int)std::round(p.x), (int)std::round(p.y));
 		}
@@ -27,5 +29,9 @@ namespace aam {
 		static MatrixX collectTextures(const MatrixX &rawShapeList, const std::vector<std::string> &imgList);
 		static MatrixX collectTextures(const MatrixX &rawShapeList, cv::VideoCapture &videoCapture);
 		static void renderTexOnMesh(const RowVectorX &texture, Mesh &mesh, cv::Mat &image);
+		static void getResolution(int &w, int &h) {
+			w = g_w;
+			h = g_h;
+		}
 	};
 }

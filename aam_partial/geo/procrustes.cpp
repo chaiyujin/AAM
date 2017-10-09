@@ -89,6 +89,10 @@ namespace aam {
 
 		} while (!done);
 
+		for (MatrixX::Index s = 0; s < nShapes; ++s) {
+			procrustes(refShape, alignedShapes.row(s));
+		}
+
 		return alignedShapes;
 	}
 }

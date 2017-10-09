@@ -15,10 +15,10 @@ namespace aam {
 		Triangle(int v1, int v2, int v3, const RowVectorX &allPoints);
 		Triangle(int v1, int v2, int v3, int row, const MatrixX &allPoints);
 		bool Triangle::isInside(const Point &p) const {
-			double a, b, c;
+			float a, b, c;
 			return isInside(p, a, b, c);
 		}
-		bool Triangle::isInside(const Point &p, double &alpha, double &beta, double &gamma) const;
+		bool Triangle::isInside(const Point &p, float &alpha, float &beta, float &gamma) const;
 		Point point(int i) const {
 			assert((0 <= i && i <= 2));
 			if (i == 0) return Point(x1, y1);
@@ -35,12 +35,13 @@ namespace aam {
 
 	class Triangulation {
 	private:
-		static RowVectorXi triangleIndexes;
+		static RowVectorXi m_triangleIndexes;
 	public:
+		friend class Saver;
 		static RowVectorXi delaunayTriangulation(Eigen::Ref<const RowVectorX> ileavedPoints);
 		static RowVectorXi getTriangleIndexes() {
-			assert(triangleIndexes.rows() != 0);
-			return triangleIndexes;
+			assert(m_triangleIndexes.rows() != 0);
+			return m_triangleIndexes;
 		}
 	};
 }

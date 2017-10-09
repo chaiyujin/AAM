@@ -9,6 +9,7 @@ namespace aam {
 	private:
 		static RowVectorX m_meanShape;
 	public:
+		friend class Saver;
 		static Scalar procrustes(Eigen::Ref<const RowVectorX> X, Eigen::Ref<RowVectorX> Y);
 		static MatrixX alignShapes(Eigen::Ref<const MatrixX> X, int maxIterations);
 		static const RowVectorX &getMeanShape() {
