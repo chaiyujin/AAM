@@ -30,16 +30,16 @@ namespace aam {
 		std::string toString() {
 			std::string ret = "";
 			ret += String::numToBytes<int>(numComponents);
-			ret += String::matToBytes<MatrixX>(W);
-			ret += String::matToBytes<RowVectorX>(mean);
-			ret += String::matToBytes<RowVectorX>(eigenValues);
+			ret += String::matToBytes<MatrixX, Scalar>(W);
+			ret += String::matToBytes<RowVectorX, Scalar>(mean);
+			ret += String::matToBytes<RowVectorX, Scalar>(eigenValues);
 			return ret;
 		}
-		void fromStringStream(std::stringstream &str) {
+		void fromistream(std::istream &str) {
 			String::numFromBytes<int>(str, numComponents);
-			String::matFromBytes<MatrixX>(str, W);
-			String::matFromBytes<RowVectorX>(str, mean);
-			String::matFromBytes<RowVectorX>(str, eigenValues);
+			String::matFromBytes<MatrixX, Scalar>(str, W);
+			String::matFromBytes<RowVectorX, Scalar>(str, mean);
+			String::matFromBytes<RowVectorX, Scalar>(str, eigenValues);
 		}
 	};
 }

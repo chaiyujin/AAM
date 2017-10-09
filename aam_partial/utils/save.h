@@ -18,18 +18,18 @@ namespace aam {
 	private:
 		static std::string saveInternal() {
 			std::string ret = "";
-			ret += String::matToBytes(Procrustes::m_meanShape);
-			ret += String::matToBytes(Triangulation::m_triangleIndexes);
-			ret += String::matToBytes(Texture::g_texCoords);
+			ret += String::matToBytes<RowVectorX, Scalar>(Procrustes::m_meanShape);
+			ret += String::matToBytes<RowVectorXi, int>(Triangulation::m_triangleIndexes);
+			ret += String::matToBytes<MatrixX, Scalar>(Texture::g_texCoords);
 			ret += String::numToBytes(Texture::g_w);
 			ret += String::numToBytes(Texture::g_h);
 			return ret;
 		}
 
-		static void loadInternal(std::stringstream &str) {
-			String::matFromBytes(str, Procrustes::m_meanShape);
-			String::matFromBytes(str, Triangulation::m_triangleIndexes);
-			String::matFromBytes(str, Texture::g_texCoords);
+		static void loadInternal(std::istream &str) {
+			String::matFromBytes<RowVectorX, Scalar>(str, Procrustes::m_meanShape);
+			String::matFromBytes<RowVectorXi, int>(str, Triangulation::m_triangleIndexes);
+			String::matFromBytes<MatrixX, Scalar>(str, Texture::g_texCoords);
 			String::numFromBytes(str, Texture::g_w);
 			String::numFromBytes(str, Texture::g_h);
 			Texture::g_meanMesh = Mesh(Procrustes::m_meanShape);
@@ -43,9 +43,9 @@ namespace aam {
 			return ret;
 		}
 
-		static bool load(std::stringstream stream, TexFitModel &m) {
+		static bool load(std::istream stream, TexFitModel &m) {
 			loadInternal(stream);
-			m.fromStringStream(stream);
+			m.fromistream(stream);
 			return true;
 		}
 
@@ -63,21 +63,9 @@ namespace aam {
 		static bool load(std::string filePath, TexFitModel &m) {
 			std::ifstream fin(filePath, std::ifstream::binary);
 			if (!fin.good()) return false;
-			fin.seekg(0, fin.end);
-			long size = fin.tellg();
-			fin.seekg(0);
-			// allocate memory for file content
-			std::string str(size, ' ');
-			char* buffer = new char[size];
-			fin.read(buffer, size);
+			loadInternal(fin);
+			m.fromistream(fin);
 			fin.close();
-			str.assign(buffer, size);
-			printf("Load size: %d\n", str.length());
-			delete buffer;
-
-			std::stringstream stream(str);
-			loadInternal(stream);
-			m.fromStringStream(stream);
 			return true;
 		}
 	};

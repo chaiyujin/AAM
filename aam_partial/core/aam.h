@@ -5,7 +5,7 @@
 #include <string>
 #include <iostream>
 #include <fstream>
-//#define SHOW
+#define SHOW
 
 namespace aam {
 	typedef unsigned char byte;
@@ -22,10 +22,16 @@ namespace aam {
 	};
 	typedef MatrixTraits<Scalar,	1, Eigen::Dynamic>::MatrixType	RowVectorX;
 	typedef MatrixTraits<int,		1, Eigen::Dynamic>::MatrixType	RowVectorXi;
+	typedef MatrixTraits<byte,		1, Eigen::Dynamic>::MatrixType	RowVectorXByte;
 	typedef MatrixTraits<Scalar,	1, 2>::MatrixType				RowVector2;
 	typedef MatrixTraits<Scalar,	1, 3>::MatrixType				RowVector3;
 	typedef MatrixTraits<Scalar			>::MatrixType				MatrixX;
+	typedef MatrixTraits<byte			>::MatrixType				MatrixXByte;
 	typedef MatrixTraits<Scalar,	2, 2>::MatrixType				Matrix2;
+	template <typename T>
+	using RowVectorX_ = Eigen::Matrix<T, 1, Eigen::Dynamic, Eigen::RowMajor>;
+	template <typename T>
+	using MatrixX_ = Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>;
 
 	class Saver;
 

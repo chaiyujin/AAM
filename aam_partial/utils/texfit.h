@@ -17,7 +17,7 @@ namespace aam {
 	private:
 		PCA *p_pcaShp;
 		MatrixX projectedShape;
-		MatrixX textureList;
+		MatrixX_<byte> textureList;
 		std::vector<int> sampleIndex;
 		Point centerPoint;
 		float xScale, yScale;
@@ -34,11 +34,11 @@ namespace aam {
 		bool EQ(const RowVectorX &X, const RowVectorX &Y);
 	public:
 		TexFitModel() : p_pcaShp(nullptr) {}
-		TexFitModel(std::stringstream &str) : p_pcaShp(nullptr) {
-			this->fromStringStream(str);
+		TexFitModel(std::istream &str) : p_pcaShp(nullptr) {
+			this->fromistream(str);
 		}
 		void buildFromVideo(std::string videoPath);
-		RowVectorX fitTexture(const RowVectorX &queryShape, bool isRawShape, bool needNormalized);
+		RowVectorX_<byte> fitTexture(const RowVectorX &queryShape, bool isRawShape, bool needNormalized);
 		void normalizeShape(RowVectorX &shape) {
 			auto &row = shape;
 			for (int j = 0; j < row.cols(); j += 2) {
@@ -57,16 +57,16 @@ namespace aam {
 			}
 		}
 		std::string toString() const;
-		bool fromStringStream(std::stringstream &);	
+		bool fromistream(std::istream &);	
 		void getScale(float &x, float &y) const {
 			x = xScale;
 			y = yScale;
 		}
 		// test
-		void testFitTexture(const MatrixX &rawShapeList) {
+		void testFitTexture(const MatrixX &rawShapeList, bool raw = true, bool norm = true) {
 			std::cout << sampleIndex.size() << std::endl;
 			for (int i = 0; i < sampleIndex.size(); ++i) {
-				fitTexture(rawShapeList.row(i), false, false);
+				fitTexture(rawShapeList.row(i), raw, norm);
 			}
 		}
 	};
