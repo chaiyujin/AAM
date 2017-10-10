@@ -6,6 +6,17 @@
 aam::TexFitModel g_model;
 bool g_inited  = false;
 
+void printMacro() {
+	printf("AAM define {\n");
+	printf("\tMAX_SAMPLES: %d\n", MAX_SAMPLES);
+#ifdef SHOW
+	printf("\tSHOW: yes\n");
+#else 
+	printf("\tSHOW: no\n");
+#endif
+	printf("}\n");
+}
+
 static PyObject *
 aam_buildAndSave(PyObject *self, PyObject *args) {
 	const char *videoPath;
@@ -13,6 +24,7 @@ aam_buildAndSave(PyObject *self, PyObject *args) {
 	if (!PyArg_ParseTuple(args, "zz", &videoPath, &savePath))
 		return NULL;
 
+	printMacro();
 	printf("Building aam...\n");
 	g_model.buildFromVideo(videoPath);
 	printf("Save aam...\n");
@@ -34,6 +46,7 @@ aam_load(PyObject *self, PyObject *args) {
 	aam::Saver::load(savePath, g_model);
 	g_inited = true;
 	printf("Loading is done!\n");
+	printMacro();
 
 	Py_INCREF(Py_None);
 	return Py_None;
