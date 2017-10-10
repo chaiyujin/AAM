@@ -23,18 +23,17 @@ int main() {
 }
 
 void test() {
-	/*aam::TexFitModel model;
-	model.buildFromVideo("../video/test.avi");
-	auto str = aam::Saver::save(model);
-	aam::Saver::load(std::istream(str), model);
-	test_model(model, "../video/test.avi");*/
-
 	aam::TexFitModel model;
-	/*model.buildFromVideo("../video/test.avi");
-	aam::Saver::save("fit.model", model);*/
-	aam::Saver::load("fit.model", model);
+	model.buildFromVideo("../video/test.avi");
+	aam::Saver::save("../model/fit.model", model);
+	aam::Saver::load("../model/fit.model", model);
 	system("pause");
-	test_model(model, "../video/test.avi");
+	//test_model(model, "../video/test.avi");
+
+
+	/*aam::Model model;
+	model.buildFromVideo("../video/test.avi");*/
+
 }
 
 void test_model(aam::TexFitModel &model, std::string videoPath) {
@@ -44,4 +43,5 @@ void test_model(aam::TexFitModel &model, std::string videoPath) {
 	std::cout << "Load video and lms from " << videoPath << std::endl;
 	aam::LMSUtil::loadFromVideo(videoPath, rawShapeList, videoCapture);
 	model.testFitTexture(rawShapeList);
+	videoCapture.release();
 }

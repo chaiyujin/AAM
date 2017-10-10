@@ -5,7 +5,8 @@
 #include <string>
 #include <iostream>
 #include <fstream>
-#define SHOW
+//#define SHOW
+#define MAX_SAMPLES 1000
 
 namespace aam {
 	typedef unsigned char byte;

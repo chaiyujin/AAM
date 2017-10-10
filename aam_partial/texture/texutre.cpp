@@ -16,7 +16,7 @@ namespace aam {
 		for (int y = (int)bbox.startY(); y <= (int)bbox.endY(); ++y) {
 			for (int x = (int)bbox.startX(); x <= (int)bbox.endX(); ++x) {
 				int tri;
-				float a, b, c;
+				Scalar a, b, c;
 				bool hit = meanMesh.isInside(Point((Scalar)x, (Scalar)y), tri, a, b, c);
 				// hit!
 				if (hit) {
@@ -40,8 +40,8 @@ namespace aam {
 		int x = (int)p.x;
 		int y = (int)p.y;
 
-		float rx = p.x - x;
-		float ry = p.y - y;
+		Scalar rx = p.x - x;
+		Scalar ry = p.y - y;
 		Color c00 = colorAt(image, x, y);
 		Color c01 = colorAt(image, x, y + 1);
 		Color c10 = colorAt(image, x + 1, y);

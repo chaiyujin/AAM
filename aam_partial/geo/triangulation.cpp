@@ -28,11 +28,11 @@ namespace aam {
 	}
 
 	bool Triangle::isInside(const Point &p,
-		float &alpha,
-		float &beta,
-		float &gamma) const {
+		Scalar &alpha,
+		Scalar &beta,
+		Scalar &gamma) const {
 
-		float x, y;
+		Scalar x, y;
 		bool inSide;
 
 		x = p.x;
@@ -71,7 +71,7 @@ namespace aam {
 		RowVector2 maxC = points.colwise().maxCoeff();
 
 		// Don't make the bounds too tight.
-		cv::Rect_<float> bounds(
+		cv::Rect_<Scalar> bounds(
 			std::floor(minC.x() - aam::Scalar(1)),
 			std::floor(minC.y() - aam::Scalar(1)),
 			std::ceil(maxC.x() - minC.x() + aam::Scalar(2)),

@@ -15,10 +15,10 @@ namespace aam {
 		Triangle(int v1, int v2, int v3, const RowVectorX &allPoints);
 		Triangle(int v1, int v2, int v3, int row, const MatrixX &allPoints);
 		bool Triangle::isInside(const Point &p) const {
-			float a, b, c;
+			Scalar a, b, c;
 			return isInside(p, a, b, c);
 		}
-		bool Triangle::isInside(const Point &p, float &alpha, float &beta, float &gamma) const;
+		bool Triangle::isInside(const Point &p, Scalar &alpha, Scalar &beta, Scalar &gamma) const;
 		Point point(int i) const {
 			assert((0 <= i && i <= 2));
 			if (i == 0) return Point(x1, y1);

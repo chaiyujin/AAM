@@ -7,11 +7,11 @@ namespace aam {
 		// center
 		centerPoint = Point(0, 0);
 		const auto &meanShape = Procrustes::getMeanShape();
-		float min_x = meanShape[0], max_x = meanShape[0];
-		float min_y = meanShape[1], max_y = meanShape[1];
+		Scalar min_x = meanShape[0], max_x = meanShape[0];
+		Scalar min_y = meanShape[1], max_y = meanShape[1];
 		for (int j = 0; j < meanShape.size(); j += 2) {
-			float x = meanShape[j];
-			float y = meanShape[j + 1];
+			Scalar x = meanShape[j];
+			Scalar y = meanShape[j + 1];
 			if (x < min_x) min_x = x;
 			if (x > max_x) max_x = x;
 			if (y < min_y) min_y = y;
@@ -25,8 +25,8 @@ namespace aam {
 		for (int i = 0; i < shapeList.rows(); ++i) {
 			auto &row = shapeList.row(i);
 			for (int j = 0; j < row.cols(); j += 2) {
-				float x = row[j];
-				float y = row[j + 1];
+				Scalar x = row[j];
+				Scalar y = row[j + 1];
 				x = x - centerPoint.x;
 				y = y - centerPoint.y;
 				if (std::abs(x) > xScale) xScale = std::abs(x);
@@ -36,8 +36,8 @@ namespace aam {
 		for (int i = 0; i < shapeList.rows(); ++i) {
 			auto &row = shapeList.row(i);
 			for (int j = 0; j < row.cols(); j += 2) {
-				float x = row[j];
-				float y = row[j + 1];
+				Scalar x = row[j];
+				Scalar y = row[j + 1];
 				x = (x - centerPoint.x) / xScale;
 				y = (y - centerPoint.y) / yScale;
 				row[j] = x;
@@ -143,6 +143,9 @@ namespace aam {
 				l = m + 1;
 			}
 		}
+#ifdef SHOW
+		printf("%d\r", idx);
+#endif
 		RowVectorX_<byte> texture = textureList.row(sampleIndex[idx]);
 #ifdef SHOW
 		this->scaleShape(shape);
@@ -166,10 +169,10 @@ namespace aam {
 		for (int i = 0; i < projectedShape.rows(); ++i) {
 			ret += String::numToBytes<int>(sampleIndex[i]);
 		}
-		ret += String::numToBytes<float>(centerPoint.x);
-		ret += String::numToBytes<float>(centerPoint.y);
-		ret += String::numToBytes<float>(xScale);
-		ret += String::numToBytes<float>(yScale);
+		ret += String::numToBytes<Scalar>(centerPoint.x);
+		ret += String::numToBytes<Scalar>(centerPoint.y);
+		ret += String::numToBytes<Scalar>(xScale);
+		ret += String::numToBytes<Scalar>(yScale);
 		printf("Save centerPoint %f %f\n", centerPoint.x, centerPoint.y);
 		printf("Save scale %f %f\n", xScale, yScale);
 		return ret;
@@ -186,10 +189,10 @@ namespace aam {
 		for (int i = 0; i < projectedShape.rows(); ++i) {
 			sampleIndex.push_back(String::numFromBytes<int>(str));
 		}
-		String::numFromBytes<float>(str, centerPoint.x);
-		String::numFromBytes<float>(str, centerPoint.y);
-		String::numFromBytes<float>(str, xScale);
-		String::numFromBytes<float>(str, yScale);
+		String::numFromBytes<Scalar>(str, centerPoint.x);
+		String::numFromBytes<Scalar>(str, centerPoint.y);
+		String::numFromBytes<Scalar>(str, xScale);
+		String::numFromBytes<Scalar>(str, yScale);
 		printf("Load centerPoint %f %f\n", centerPoint.x, centerPoint.y);
 		printf("Load scale %f %f\n", xScale, yScale);
 		return true;

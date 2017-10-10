@@ -13,15 +13,15 @@ namespace aam {
 		cap.set(CV_CAP_PROP_POS_FRAMES, 0);
 		std::string line;
 		cv::Mat image;
-		std::vector<std::vector<float>> list;
+		std::vector<std::vector<Scalar>> list;
 		while (std::getline(fin, line)) {
 			if (line.length() == 0) break;
 			cap >> image;
-			float hc = image.cols / 2.f;
-			float hr = image.rows / 2.f;
-			std::vector<float> row;
+			Scalar hc = image.cols / 2.f;
+			Scalar hr = image.rows / 2.f;
+			std::vector<Scalar> row;
 			std::stringstream stream(line);
-			float x, y;
+			Scalar x, y;
 			while (stream >> x >> y) {
 				if (needScale) {
 					x = x * hc + hc;
@@ -31,6 +31,7 @@ namespace aam {
 				row.push_back(y);
 			}
 			list.push_back(row);
+			if (list.size() >= MAX_SAMPLES) break;
 		}
 		// copy to matrix
 		coordsList.resize(list.size(), list[0].size());

@@ -13,11 +13,11 @@ aam_buildAndSave(PyObject *self, PyObject *args) {
 	if (!PyArg_ParseTuple(args, "zz", &videoPath, &savePath))
 		return NULL;
 
-	printf("Building aam...");
+	printf("Building aam...\n");
 	g_model.buildFromVideo(videoPath);
-	printf("Save aam...");
+	printf("Save aam...\n");
 	aam::Saver::save(savePath, g_model);
-	printf("Building and saving are done!");
+	printf("Building and saving are done!\n");
 	g_inited = true;
 
 	Py_INCREF(Py_None);
@@ -30,10 +30,10 @@ aam_load(PyObject *self, PyObject *args) {
 	if (!PyArg_ParseTuple(args, "z", &savePath))
 		return NULL;
 
-	printf("Load aam...");
+	printf("Load aam...\n");
 	aam::Saver::load(savePath, g_model);
 	g_inited = true;
-	printf("Loading is done!");
+	printf("Loading is done!\n");
 
 	Py_INCREF(Py_None);
 	return Py_None;
@@ -160,7 +160,7 @@ aam_renderNormShape(PyObject *self, PyObject *args) {
 	PyObject *arg = NULL;
 	PyObject *arr = NULL;
 	aam::RowVectorX row;
-	aam::RowVectorX texture;
+	aam::RowVectorXByte texture;
 	std::vector<float> data;
 	if (!PyArg_ParseTuple(args, "O", &arg))
 		return NULL;

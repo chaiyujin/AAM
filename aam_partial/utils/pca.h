@@ -12,7 +12,27 @@ namespace aam {
 		RowVectorX eigenValues;
 	public:
 		PCA(): mean(1, 1), eigenValues(0, 0), W(0, 0) {}
-		PCA(const MatrixX &samplesOnRows, float percentage);
+		PCA(const MatrixX &samplesOnRows, Scalar percentage) {
+			// center aligned
+			mean = samplesOnRows.colwise().mean();
+			auto aligned = samplesOnRows.rowwise() - mean;
+			Eigen::JacobiSVD<MatrixX> svd(aligned, Eigen::ComputeThinV);
+			eigenValues = svd.singularValues();
+			Scalar *sum = new Scalar[eigenValues.size()];
+			sum[0] = eigenValues[0];
+			for (int i = 1; i < eigenValues.size(); ++i) {
+				sum[i] = sum[i - 1] + eigenValues[i];
+			}
+			numComponents = eigenValues.size();
+			for (int i = 0; i < eigenValues.size(); ++i) {
+				if (sum[i] / sum[eigenValues.size() - 1] >= percentage) {
+					numComponents = i + 1;
+					break;
+				}
+			}
+			delete sum;
+			W = svd.matrixV().leftCols(numComponents);
+		}
 		template <class T>
 		T project(const T &matrix) {
 			auto m = matrix.rowwise() - mean;

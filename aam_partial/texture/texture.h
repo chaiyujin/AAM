@@ -63,14 +63,15 @@ namespace aam {
 		static MatrixX_<T> collectTextures(const MatrixX &rawShapeList, const std::vector<std::string> &imgList) {
 			assert(rawShapeList.rows() == imgList.size());
 			MatrixX_<T> ret;
-			for (int imgI = 0; imgI < imgList.size(); ++imgI) {
+			int size = rawShapeList.rows(); if (size > MAX_SAMPLES) size = MAX_SAMPLES;
+			for (int imgI = 0; imgI < size; ++imgI) {
 				auto &vec = rawShapeList.row(imgI);
 				cv::Mat mat = cv::imread(imgList[imgI]);
 				g_w = mat.cols;
 				g_h = mat.rows;
 				auto texture = aam::Texture::warpTexToMeanMesh<T>(vec, mat);
 				if (ret.rows() == 0) {
-					ret.resize(imgList.size(), texture.cols());
+					ret.resize(size, texture.cols());
 				}
 				ret.row(imgI) = texture;
 #ifdef SHOW
@@ -85,14 +86,16 @@ namespace aam {
 			cap.set(CV_CAP_PROP_POS_FRAMES, 0);
 			cv::Mat image;
 			MatrixX_<T> ret;
-			for (int imgI = 0; imgI < rawShapeList.rows(); ++imgI) {
+			int size = rawShapeList.rows(); if (size > MAX_SAMPLES) size = MAX_SAMPLES;
+			for (int imgI = 0; imgI < size; ++imgI) {
+				printf("%d\r", imgI);
 				auto &vec = rawShapeList.row(imgI);
 				cap >> image;
 				g_w = image.cols;
 				g_h = image.rows;
 				auto texture = aam::Texture::warpTexToMeanMesh<T>(vec, image);
 				if (ret.rows() == 0) {
-					ret.resize(rawShapeList.rows(), texture.cols());
+					ret.resize(size, texture.cols());
 				}
 				ret.row(imgI) = texture;
 #ifdef SHOW
@@ -133,7 +136,7 @@ namespace aam {
 			for (int y = (int)bbox.startY(); y <= (int)bbox.endY(); ++y) {
 				for (int x = (int)bbox.startX(); x <= (int)bbox.endX(); ++x) {
 					int tri;
-					float vec[3];
+					Scalar vec[3];
 					bool hit = mesh.isInside(Point((Scalar)x, (Scalar)y), tri, vec[0], vec[1], vec[2]);
 					// hit!
 					if (hit) {

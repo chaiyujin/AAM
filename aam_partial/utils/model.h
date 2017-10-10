@@ -20,10 +20,10 @@ namespace aam {
 		PCA *p_pcaApp;
 		bool m_isGood;
 		Point centerPoint;
-		float xScale, yScale;
-		float textureScale;
+		Scalar xScale, yScale;
+		Scalar textureScale;
 		void normalizeShapes(MatrixX &shapeList);
-		void build(MatrixX &alignedShapeList, MatrixX &textureList);
+		void build(MatrixX &alignedShapeList, MatrixX_<Scalar> &textureList);
 		void reset() {
 			if (p_pcaShp) { delete p_pcaShp; p_pcaShp = nullptr; }
 			if (p_pcaTex) { delete p_pcaTex; p_pcaTex = nullptr; }

@@ -20,7 +20,7 @@ namespace aam {
 		MatrixX_<byte> textureList;
 		std::vector<int> sampleIndex;
 		Point centerPoint;
-		float xScale, yScale;
+		Scalar xScale, yScale;
 		void normalizeShapes(MatrixX &shapeList);
 		void reset() {
 			if (p_pcaShp) { delete p_pcaShp; p_pcaShp = nullptr; }
@@ -42,8 +42,8 @@ namespace aam {
 		void normalizeShape(RowVectorX &shape) {
 			auto &row = shape;
 			for (int j = 0; j < row.cols(); j += 2) {
-				float x = row[j];
-				float y = row[j + 1];
+				Scalar x = row[j];
+				Scalar y = row[j + 1];
 				x = (x - centerPoint.x) / xScale;
 				y = (y - centerPoint.y) / yScale;
 				row[j] = x;
@@ -58,14 +58,15 @@ namespace aam {
 		}
 		std::string toString() const;
 		bool fromistream(std::istream &);	
-		void getScale(float &x, float &y) const {
+		void getScale(Scalar &x, Scalar &y) const {
 			x = xScale;
 			y = yScale;
 		}
 		// test
 		void testFitTexture(const MatrixX &rawShapeList, bool raw = true, bool norm = true) {
-			std::cout << sampleIndex.size() << std::endl;
+			std::cout << sampleIndex.size() << " " << rawShapeList.rows() << std::endl;
 			for (int i = 0; i < sampleIndex.size(); ++i) {
+				printf("\t\t\t\t\t\t\t\r%d ", i);
 				fitTexture(rawShapeList.row(i), raw, norm);
 			}
 		}
