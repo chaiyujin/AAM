@@ -28,7 +28,7 @@ void test() {
 	aam::Saver::save("../model/fit.model", model);
 	aam::Saver::load("../model/fit.model", model);
 	system("pause");
-	//test_model(model, "../video/test.avi");
+	test_model(model, "../video/test.avi");
 
 
 	/*aam::Model model;

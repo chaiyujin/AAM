@@ -1,8 +1,14 @@
 #include "texfit.h"
 #include "print.h"
-
+#define PCA_SORT
 namespace aam {
-
+	const int sortCnt = 30;
+	const int sortOrder[sortCnt] = {
+		12, 18, 13, 17, 25, 29,
+		19, 21, 22, 24, 20, 23,
+		15, 14, 16, 27, 26, 28, 9, 10, 11,
+		0, 8, 6, 1, 7, 3, 5, 2, 4
+	};
 	void TexFitModel::normalizeShapes(MatrixX &shapeList) {
 		// center
 		centerPoint = Point(0, 0);
@@ -53,7 +59,7 @@ namespace aam {
 		std::cout << "Load video and lms from " << videoPath << std::endl;
 		LMSUtil::loadFromVideo(videoPath, rawShapeList, videoCapture);
 		std::cout << "Align and normalize shapes\n";
-		auto alignedShapeList = Procrustes::alignShapes(rawShapeList, 10);
+		alignedShapeList = Procrustes::alignShapes(rawShapeList, 10);
 		this->normalizeShapes(alignedShapeList);
 		std::cout << "Triangulation\n";
 		auto triangleIndexes = Triangulation::delaunayTriangulation(Procrustes::getMeanShape());
@@ -61,24 +67,27 @@ namespace aam {
 		auto texCoords = Texture::texCoordsInMeanMesh(meanMesh);
 		std::cout << "Collect texture\n";
 		textureList = Texture::collectTextures<byte>(rawShapeList, videoCapture);
-
 		videoCapture.release();
+		smoothTextures(30);
+		std::cout << "Smooth texture\n";
 
 		// pca on aligned shape
 		std::cout << "PCA on shape\n";
-		p_pcaShp = new PCA(alignedShapeList, 0.50);
+		p_pcaShp = new PCA(alignedShapeList, 0.99f);
 		std::cout << "Shape has components: " << p_pcaShp->getNumComponents() << std::endl;
 		projectedShape = p_pcaShp->project(alignedShapeList);
-		//// sort samples
-		for (int i = 0; i < projectedShape.rows(); ++i) {
+		// sort samples
+		for (int i = 0; i < alignedShapeList.rows(); ++i) {
 			sampleIndex.push_back(i);
 		}
 		this->qsort(sampleIndex, 0, sampleIndex.size() - 1);
 #ifdef SHOW
+		system("pause");
 		testFitTexture(alignedShapeList, false, false);
 #endif
 	}
 
+#ifdef PCA_SORT
 	void TexFitModel::sort(std::vector<int> &idx, int l, int r) {
 		for (int i = l; i <= r; ++i) {
 			for (int j = i + 1; j <= r; ++j) {
@@ -120,34 +129,87 @@ namespace aam {
 		}
 		return true;
 	}
+#else
+	void TexFitModel::sort(std::vector<int> &idx, int l, int r) {
+		for (int i = l; i <= r; ++i) {
+			for (int j = i + 1; j <= r; ++j) {
+				if (LT(alignedShapeList.row(idx[j]), alignedShapeList.row(idx[i]))) {
+					int t = idx[i]; idx[i] = idx[j]; idx[j] = t;
+				}
+			}
+		}
+	}
+
+	void TexFitModel::qsort(std::vector<int> &idx, int l, int r) {
+		int i = l, j = r;
+		int m = (i + j) / 2;
+		RowVectorX key(1, alignedShapeList.row(idx[m]).cols());
+		key << alignedShapeList.row(idx[m]);
+		while (i <= j) {
+			while (LT(alignedShapeList.row(idx[i]), key) && i < r) ++i;
+			while (LT(key, alignedShapeList.row(idx[j])) && l < j) --j;
+			if (i <= j) {
+				int t = idx[i]; idx[i] = idx[j]; idx[j] = t;
+				++i; --j;
+			}
+		}
+		if (i <= r) qsort(idx, i, r);
+		if (l <= j) qsort(idx, l, j);
+	}
+
+	bool TexFitModel::LT(const RowVectorX &X, const RowVectorX &Y) {
+		for (int i = 0; i < X.size(); ++i) {
+			int k = (i >= sortCnt) ? (i - sortCnt) : i;
+			k = k * 2 + (i >= sortCnt);
+			if (X[k] > Y[k]) return false;
+			if (X[k] < Y[k]) return true;
+		}
+		return false;
+	}
+
+	bool TexFitModel::EQ(const RowVectorX &X, const RowVectorX &Y) {
+		for (int i = 0; i < X.size(); ++i) {
+			int k = (i >= sortCnt) ? (i - sortCnt) : i;
+			k = k * 2 + (i >= sortCnt);
+			if (!(std::abs(X[k] - Y[k]) < 1e-6)) return false;
+		}
+		return true;
+	}
+#endif
 
 	RowVectorX_<byte> TexFitModel::fitTexture(const RowVectorX &queryShape, bool isRawShape, bool needNormalized) {
+		int idx = -1;
 		// project queryShape
 		RowVectorX shape = queryShape;
 		if (isRawShape) Procrustes::procrustes(Procrustes::getMeanShape(), shape);
 		if (isRawShape || needNormalized) normalizeShape(shape);
+#ifdef PCA_SORT
+		const auto &shapeList = projectedShape;
 		auto query = p_pcaShp->project(shape);
-		int l = 0, r = projectedShape.rows() - 1;
-		int idx = -1;
-		while (l <= r) {
-			int m = (l + r) / 2;
-			const auto & key = projectedShape.row(sampleIndex[m]);
-			idx = m;
-			if (EQ(query, key)) {
-				break;
-			}
-			else if (LT(query, key)) {
-				r = m - 1;
-			}
-			else if (LT(key, query)) {
-				l = m + 1;
+#else
+		const auto &shapeList = alignedShapeList;
+		const auto &query = queryShape;
+#endif
+		if (idx < 0) {
+			int l = 0, r = shapeList.rows() - 1;
+			while (l <= r) {
+				int m = (l + r) / 2;
+				const auto & key = shapeList.row(sampleIndex[m]);
+				idx = m;
+				if (EQ(query, key)) {
+					break;
+				}
+				else if (LT(query, key)) {
+					r = m - 1;
+				}
+				else if (LT(key, query)) {
+					l = m + 1;
+				}
 			}
 		}
-#ifdef SHOW
-		printf("%d\r", idx);
-#endif
 		RowVectorX_<byte> texture = textureList.row(sampleIndex[idx]);
 #ifdef SHOW
+		printf("%d\r", idx);
 		this->scaleShape(shape);
 		Mesh mesh(shape);
 		cv::Mat image = cv::Mat::zeros((int)(yScale * 2 + 10), (int)(xScale * 2 + 10), CV_8UC3);
@@ -164,6 +226,8 @@ namespace aam {
 		ret += p_pcaShp->toString();
 		ret += String::matToBytes<MatrixX, Scalar>(projectedShape);
 		printf("Save projectShape %d %d\n", projectedShape.rows(), projectedShape.cols());
+		ret += String::matToBytes<MatrixX, Scalar>(alignedShapeList);
+		printf("Save alignedShapeList %d %d\n", alignedShapeList.rows(), alignedShapeList.cols());
 		ret += String::matToBytes<MatrixX_<byte>, byte>(textureList);
 		printf("Save textureList %d %d\n", textureList.rows(), textureList.cols());
 		for (int i = 0; i < projectedShape.rows(); ++i) {
@@ -184,6 +248,8 @@ namespace aam {
 		p_pcaShp->fromistream(str);
 		String::matFromBytes<MatrixX, Scalar>(str, projectedShape);
 		printf("Load projectShape %d %d\n", projectedShape.rows(), projectedShape.cols());
+		String::matFromBytes<MatrixX, Scalar>(str, alignedShapeList);
+		printf("Load alignedShapeList %d %d\n", alignedShapeList.rows(), alignedShapeList.cols());
 		String::matFromBytes<MatrixX_<byte>, byte>(str, textureList);
 		printf("Load textureList %d %d\n", textureList.rows(), textureList.cols());
 		for (int i = 0; i < projectedShape.rows(); ++i) {
@@ -196,5 +262,30 @@ namespace aam {
 		printf("Load centerPoint %f %f\n", centerPoint.x, centerPoint.y);
 		printf("Load scale %f %f\n", xScale, yScale);
 		return true;
+	}
+
+	void TexFitModel::smoothTextures(int step) {
+		MatrixX_<byte> newList(textureList.rows(), textureList.cols());
+		std::cout << "new texture " << newList.rows() << " " << newList.cols() << std::endl;
+		for (int i = 0; i < textureList.rows(); ++i) {
+			int cnt = 0;
+			int l = i - step / 2;
+			int r = l + step;
+			l = std::max(0, l);
+			r = std::min(r, (int)textureList.rows());
+			std::vector<int> newRow(textureList.cols());
+			for (int k = 0; k < newRow.size(); ++k) newRow[k] = 0;
+			for (int j = l; j < r; ++j) {
+				cnt += 1;
+				for (int k = 0; k < newRow.size(); ++k)
+					newRow[k] += (int)textureList.row(j).col(k).value();
+			}
+			for (int k = 0; k < newRow.size(); ++k) {
+				newRow[k] = (int)((float)newRow[k] / (float)cnt);
+				newList(i, k) = (byte)newRow[k];
+			}
+		}
+		std::cout << "new texture " << newList.rows() << " " << newList.cols() << std::endl;
+		textureList = newList;
 	}
 }

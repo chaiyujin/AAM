@@ -96,6 +96,7 @@ aam_normalizeShape(PyObject *self, PyObject *args) {
 		for (int i = 0; i < row.size(); ++i) {
 			out[i] = (float)row[i];
 		}
+		delete o_dims;
 		Py_DECREF(arr);
 		return PyArray_Return(output);
 	}
@@ -157,6 +158,7 @@ aam_normalizeLandmarks(PyObject *self, PyObject *args) {
 		for (int i = 0; i < row.size(); ++i) {
 			out[i] = (float)row[i];
 		}
+		delete o_dims;
 		Py_DECREF(arr);
 		return PyArray_Return(output);
 	}
@@ -233,6 +235,7 @@ aam_renderNormShape(PyObject *self, PyObject *args) {
 				}
 			}
 		}
+		delete o_dims;
 		Py_DECREF(arr);
 		return PyArray_Return(output);
 	}
@@ -242,6 +245,36 @@ fail:
 	Py_INCREF(Py_None);
 	return Py_None;
 }
+
+
+static PyObject *
+aam_getResolution(PyObject *self, PyObject *args) {
+
+	
+	// scale
+	float x, y;
+	g_model.getScale(x, y);
+	x = x * 2 + 10;
+	y = y * 2 + 10;
+	{
+		int *o_dims = new int[1];
+		o_dims[0] = 2;
+		PyArrayObject *output = (PyArrayObject *)PyArray_FromDims(
+			1, o_dims, NPY_INT
+		);
+		int *out = (int *)output->data;
+		int idx = 0;
+		out[0] = (int)x;
+		out[1] = (int)y;
+		delete o_dims;
+		return PyArray_Return(output);
+	}
+
+fail:
+	Py_INCREF(Py_None);
+	return Py_None;
+}
+
 
 
 static PyMethodDef Methods[] = {
@@ -269,6 +302,11 @@ static PyMethodDef Methods[] = {
 		"render_norm_shape", aam_renderNormShape,
 		METH_VARARGS,
 		"render normalized shape"
+	},
+	{
+		"get_resolution", aam_getResolution,
+		METH_VARARGS,
+		"get resolution"
 	},
 	{ NULL, NULL, 0, NULL }        /* Sentinel */
 };

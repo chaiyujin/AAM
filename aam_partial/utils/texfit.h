@@ -17,11 +17,13 @@ namespace aam {
 	private:
 		PCA *p_pcaShp;
 		MatrixX projectedShape;
+		MatrixX alignedShapeList;
 		MatrixX_<byte> textureList;
 		std::vector<int> sampleIndex;
 		Point centerPoint;
 		Scalar xScale, yScale;
 		void normalizeShapes(MatrixX &shapeList);
+		void smoothTextures(int step);
 		void reset() {
 			if (p_pcaShp) { delete p_pcaShp; p_pcaShp = nullptr; }
 			sampleIndex.clear();
@@ -67,7 +69,7 @@ namespace aam {
 			std::cout << sampleIndex.size() << " " << rawShapeList.rows() << std::endl;
 			for (int i = 0; i < sampleIndex.size(); ++i) {
 				printf("\t\t\t\t\t\t\t\r%d ", i);
-				fitTexture(rawShapeList.row(i), raw, norm);
+				fitTexture(rawShapeList.row(sampleIndex[i]), raw, norm);
 			}
 		}
 	};

@@ -121,20 +121,25 @@ namespace aam {
 					x += shape[v[i] * 2] * vec[i + 1];
 					y += shape[v[i] * 2 + 1] * vec[i + 1];
 				}
-				int xi = (int)std::round(x) * 3;
+				int xi = (int)std::round(x);
 				int yi = (int)std::round(y);
+
+				if (yi < 0 || yi >= mean.rows) continue;
+				if (xi < 0 || xi >= mean.cols) continue;
 				unsigned char *ptr = mean.ptr<unsigned char>(yi);
 				for (int i = 0; i < 3; ++i) {
 					unsigned char v = (unsigned char)texture[pi * 3 + i];
 					if (texture[pi * 3 + i] > 255) v = 255;
 					else if (texture[pi * 3 + i] < 0) v = 0;
-					ptr[xi + i] = v;
+					ptr[xi * 3 + i] = v;
 				}
 			}
 			// warp to mesh
 			BBox bbox = mesh.getBBox();
 			for (int y = (int)bbox.startY(); y <= (int)bbox.endY(); ++y) {
+				if (y < 0 || y >= image.rows) continue;
 				for (int x = (int)bbox.startX(); x <= (int)bbox.endX(); ++x) {
+					if (x < 0 || x >= image.cols) continue;
 					int tri;
 					Scalar vec[3];
 					bool hit = mesh.isInside(Point((Scalar)x, (Scalar)y), tri, vec[0], vec[1], vec[2]);
