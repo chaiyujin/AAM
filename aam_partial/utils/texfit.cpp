@@ -60,7 +60,7 @@ namespace aam {
 		auto meanMesh = Mesh(Procrustes::getMeanShape());
 		auto texCoords = Texture::texCoordsInMeanMesh(meanMesh);
 		std::cout << "Collect texture\n";
-		textureList = Texture::collectTextures(rawShapeList, videoCapture);
+		textureList = Texture::collectTextures<byte>(rawShapeList, videoCapture);
 
 		videoCapture.release();
 
@@ -74,9 +74,9 @@ namespace aam {
 			sampleIndex.push_back(i);
 		}
 		this->qsort(sampleIndex, 0, sampleIndex.size() - 1);
-
-		//testFitTexture(alignedShapeList);
-		//testFitTexture(rawShapeList);
+#ifdef SHOW
+		testFitTexture(alignedShapeList, false, false);
+#endif
 	}
 
 	void TexFitModel::sort(std::vector<int> &idx, int l, int r) {
@@ -121,7 +121,7 @@ namespace aam {
 		return true;
 	}
 
-	RowVectorX TexFitModel::fitTexture(const RowVectorX &queryShape, bool isRawShape, bool needNormalized) {
+	RowVectorX_<byte> TexFitModel::fitTexture(const RowVectorX &queryShape, bool isRawShape, bool needNormalized) {
 		// project queryShape
 		RowVectorX shape = queryShape;
 		if (isRawShape) Procrustes::procrustes(Procrustes::getMeanShape(), shape);
@@ -143,12 +143,12 @@ namespace aam {
 				l = m + 1;
 			}
 		}
-		RowVectorX texture = textureList.row(sampleIndex[idx]);
+		RowVectorX_<byte> texture = textureList.row(sampleIndex[idx]);
 #ifdef SHOW
 		this->scaleShape(shape);
 		Mesh mesh(shape);
 		cv::Mat image = cv::Mat::zeros((int)(yScale * 2 + 10), (int)(xScale * 2 + 10), CV_8UC3);
-		Texture::renderTexOnMesh(texture, mesh, image);
+		Texture::renderTexOnMesh<byte>(texture, mesh, image);
 		mesh.drawMesh(image);
 		cv::imshow("fit", image);
 		cv::waitKey(10);
@@ -159,9 +159,9 @@ namespace aam {
 	std::string TexFitModel::toString() const {
 		std::string ret = "";
 		ret += p_pcaShp->toString();
-		ret += String::matToBytes(projectedShape);
+		ret += String::matToBytes<MatrixX, Scalar>(projectedShape);
 		printf("Save projectShape %d %d\n", projectedShape.rows(), projectedShape.cols());
-		ret += String::matToBytes(textureList);
+		ret += String::matToBytes<MatrixX_<byte>, byte>(textureList);
 		printf("Save textureList %d %d\n", textureList.rows(), textureList.cols());
 		for (int i = 0; i < projectedShape.rows(); ++i) {
 			ret += String::numToBytes<int>(sampleIndex[i]);
@@ -175,13 +175,13 @@ namespace aam {
 		return ret;
 	}
 
-	bool TexFitModel::fromStringStream(std::stringstream &str) {
+	bool TexFitModel::fromistream(std::istream &str) {
 		this->reset();
 		p_pcaShp = new PCA();
-		p_pcaShp->fromStringStream(str);
-		String::matFromBytes(str, projectedShape);
+		p_pcaShp->fromistream(str);
+		String::matFromBytes<MatrixX, Scalar>(str, projectedShape);
 		printf("Load projectShape %d %d\n", projectedShape.rows(), projectedShape.cols());
-		String::matFromBytes(str, textureList);
+		String::matFromBytes<MatrixX_<byte>, byte>(str, textureList);
 		printf("Load textureList %d %d\n", textureList.rows(), textureList.cols());
 		for (int i = 0; i < projectedShape.rows(); ++i) {
 			sampleIndex.push_back(String::numFromBytes<int>(str));

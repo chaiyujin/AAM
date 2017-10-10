@@ -26,15 +26,15 @@ void test() {
 	/*aam::TexFitModel model;
 	model.buildFromVideo("../video/test.avi");
 	auto str = aam::Saver::save(model);
-	aam::Saver::load(std::stringstream(str), model);
+	aam::Saver::load(std::istream(str), model);
 	test_model(model, "../video/test.avi");*/
 
 	aam::TexFitModel model;
-	model.buildFromVideo("../video/test.avi");
-	aam::Saver::save("fit.model", model);
+	/*model.buildFromVideo("../video/test.avi");
+	aam::Saver::save("fit.model", model);*/
 	aam::Saver::load("fit.model", model);
 	system("pause");
-	//test_model(model, "../video/test.avi");
+	test_model(model, "../video/test.avi");
 }
 
 void test_model(aam::TexFitModel &model, std::string videoPath) {

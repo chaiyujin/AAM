@@ -17,8 +17,8 @@ namespace aam {
 		while (std::getline(fin, line)) {
 			if (line.length() == 0) break;
 			cap >> image;
-			float hc = image.cols / 2.;
-			float hr = image.rows / 2.;
+			float hc = image.cols / 2.f;
+			float hr = image.rows / 2.f;
 			std::vector<float> row;
 			std::stringstream stream(line);
 			float x, y;
